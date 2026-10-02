@@ -1,0 +1,28 @@
+# Example stack: a PHP app and the PII sidecar sharing a Unix socket through a named volume.
+services:
+  app:
+    image: your-org/php-app:latest
+    volumes:
+      - shared-sockets:/tmp/sockets
+    environment:
+      - PII_SOCKET_PATH=/tmp/sockets/pii_sanitizer.sock
+    depends_on:
+      pii-sanitizer-engine:
+        condition: service_healthy
+
+  pii-sanitizer-engine:
+    # Build it from https://github.com/lucajackal85/pii-sanitizer-engine (`make build`) until the image is published.
+    image: ghcr.io/lucajackal85/pii-sanitizer-engine:latest
+    # The socket is created with mode 0660. Use the gid of the app's PHP-FPM user
+    # (www-data is 33 on Debian images, 82 on Alpine images) so the app can connect.
+    user: "10001:33"
+    volumes:
+      - shared-sockets:/tmp/sockets
+      # Optional: override settings. The file only needs the keys you change.
+      # - ./pii-config.yaml:/app/config.yaml:ro
+    # environment:
+    #   - PII_HASH_SALT=change-me   # required for a meaningful "hash" strategy
+    restart: unless-stopped
+
+volumes:
+  shared-sockets:
