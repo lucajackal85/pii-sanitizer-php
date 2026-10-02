@@ -6,6 +6,7 @@ namespace OpenPii\MonologSanitizer\Tests;
 
 use Monolog\Level;
 use Monolog\LogRecord;
+use OpenPii\MonologSanitizer\Client\MaskingStrategy;
 use OpenPii\MonologSanitizer\Client\PiiClientException;
 use OpenPii\MonologSanitizer\Client\PiiClientInterface;
 use OpenPii\MonologSanitizer\Processor\PiiSanitizerProcessor;
@@ -31,7 +32,7 @@ final class PiiSanitizerProcessorTest extends TestCase
             /** @var list<array<mixed>|string> */
             public array $calls = [];
 
-            public function sanitize(string|array $payload, ?string $strategy = null): string|array
+            public function sanitize(string|array $payload, ?MaskingStrategy $strategy = null): string|array
             {
                 $this->calls[] = $payload;
                 $json = json_encode($payload, JSON_THROW_ON_ERROR);
@@ -104,7 +105,7 @@ final class PiiSanitizerProcessorTest extends TestCase
         return new class implements PiiClientInterface {
             public int $calls = 0;
 
-            public function sanitize(string|array $payload, ?string $strategy = null): string|array
+            public function sanitize(string|array $payload, ?MaskingStrategy $strategy = null): string|array
             {
                 ++$this->calls;
                 throw new PiiClientException('down');

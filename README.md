@@ -59,6 +59,23 @@ $handler->pushProcessor($processor);   // per handler, or $logger->pushProcessor
 
 The record's message, context and extra are sent together in **one** request. Objects and exceptions in the context are first normalized with Monolog's `NormalizerFormatter`, so the engine sees the same data your formatter would.
 
+## Using the client directly
+
+`PiiSocketClient` also works without Monolog, for any string or nested array:
+
+```php
+use OpenPii\MonologSanitizer\Client\MaskingStrategy;
+use OpenPii\MonologSanitizer\Client\PiiSocketClient;
+
+$client = new PiiSocketClient('/tmp/sockets/pii_sanitizer.sock');
+
+$client->sanitize('John Doe called support');                            // "[PRIVATE_PERSON] called support"
+$client->sanitize('John Doe called support', MaskingStrategy::Hash);     // "[PRIVATE_PERSON_4c2a] called support"
+$client->sanitize('John Doe called support', MaskingStrategy::Asterisk); // "******** called support"
+```
+
+Without a strategy, the engine uses its configured `masking_strategy`. The `MaskingStrategy` enum lists the strategies it accepts: `Tag`, `Hash` and `Asterisk`.
+
 ## When the sidecar is unavailable
 
 | `on_failure` | Behaviour |
