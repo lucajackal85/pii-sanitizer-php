@@ -13,7 +13,7 @@ namespace OpenPii\MonologSanitizer\Client;
 final class PiiSocketClient implements PiiClientInterface
 {
     /** @var resource|null */
-    private $stream = null;
+    private $stream;
     private int $seq = 0;
 
     private const RETRYABLE = -1; // never a real errno

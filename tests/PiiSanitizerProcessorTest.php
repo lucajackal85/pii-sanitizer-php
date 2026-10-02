@@ -9,6 +9,7 @@ use Monolog\LogRecord;
 use OpenPii\MonologSanitizer\Client\MaskingStrategy;
 use OpenPii\MonologSanitizer\Client\PiiClientException;
 use OpenPii\MonologSanitizer\Client\PiiClientInterface;
+use OpenPii\MonologSanitizer\Client\PiiSocketClient;
 use OpenPii\MonologSanitizer\Processor\PiiSanitizerProcessor;
 use PHPUnit\Framework\TestCase;
 
@@ -35,9 +36,9 @@ final class PiiSanitizerProcessorTest extends TestCase
             public function sanitize(string|array $payload, MaskingStrategy $strategy = MaskingStrategy::Tag): string|array
             {
                 $this->calls[] = $payload;
-                $json = json_encode($payload, JSON_THROW_ON_ERROR);
+                $json = json_encode($payload, \JSON_THROW_ON_ERROR);
 
-                return json_decode(str_replace(['John Doe', 'john@example.com'], ['[PRIVATE_PERSON]', '[PRIVATE_EMAIL]'], $json), true, 512, JSON_THROW_ON_ERROR);
+                return json_decode(str_replace(['John Doe', 'john@example.com'], ['[PRIVATE_PERSON]', '[PRIVATE_EMAIL]'], $json), true, 512, \JSON_THROW_ON_ERROR);
             }
         };
 
@@ -89,6 +90,42 @@ final class PiiSanitizerProcessorTest extends TestCase
         $now += 0.2;
         $processor(self::record());
         self::assertSame(2, $client->calls, 'engine retried after cooldown');
+    }
+
+    /**
+     * The real socket client against a socket nobody is listening on, as when the engine container is down.
+     */
+    private static function downClient(): PiiSocketClient
+    {
+        return new PiiSocketClient(sys_get_temp_dir() . '/pii-down-' . bin2hex(random_bytes(4)) . '.sock');
+    }
+
+    public function testEngineDownWithRealClientIsRedacted(): void
+    {
+        $processor = new PiiSanitizerProcessor(self::downClient());
+
+        $start = microtime(true);
+        $out = $processor(self::record());
+        $again = $processor(self::record());
+
+        foreach ([$out, $again] as $record) {
+            self::assertSame(PiiSanitizerProcessor::UNAVAILABLE_MARKER, $record->message);
+            self::assertSame([], $record->context);
+            self::assertSame(['pii_sanitizer' => 'unavailable'], $record->extra);
+            self::assertSame(Level::Error, $record->level);
+        }
+        $json = json_encode([$out->message, $out->context, $out->extra], \JSON_THROW_ON_ERROR);
+        self::assertStringNotContainsString('John Doe', $json);
+        self::assertStringNotContainsString('john@example.com', $json);
+        self::assertLessThan(0.5, microtime(true) - $start, 'logging must not stall while the engine is down');
+    }
+
+    public function testEngineDownWithRealClientAndPassthroughKeepsRecord(): void
+    {
+        $record = self::record();
+        $out = (new PiiSanitizerProcessor(self::downClient(), PiiSanitizerProcessor::ON_FAILURE_PASSTHROUGH))($record);
+
+        self::assertSame($record, $out);
     }
 
     public function testInvalidPolicyIsRejected(): void

@@ -85,8 +85,9 @@ Typical engine latency is listed in the [engine README](https://github.com/lucaj
 
 ```bash
 composer install
-vendor/bin/phpunit
-vendor/bin/phpstan analyse
+composer check        # php-cs-fixer + rector (dry run), PHPStan and PHPUnit, like CI
+composer cs-fix       # apply php-cs-fixer
+composer rector-fix   # apply rector
 PII_SOCKET_PATH=/tmp/sockets/pii_sanitizer.sock php examples/demo.php   # against a running engine
 ```
 

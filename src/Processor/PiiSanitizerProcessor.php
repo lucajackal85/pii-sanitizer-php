@@ -27,11 +27,11 @@ final class PiiSanitizerProcessor implements ProcessorInterface
     public const ON_FAILURE_PASSTHROUGH = 'passthrough';
     public const UNAVAILABLE_MARKER = '[PII_SANITIZER_UNAVAILABLE]';
 
-    private NormalizerFormatter $normalizer;
+    private readonly NormalizerFormatter $normalizer;
     private float $openUntil = 0.0;
 
     /** @var \Closure(): float */
-    private \Closure $clock;
+    private readonly \Closure $clock;
 
     /**
      * @param (callable(): float)|null $clock seconds as float; injectable for tests
