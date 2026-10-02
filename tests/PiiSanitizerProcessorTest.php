@@ -36,9 +36,9 @@ final class PiiSanitizerProcessorTest extends TestCase
             public function sanitize(string|array $payload, MaskingStrategy $strategy = MaskingStrategy::Tag): string|array
             {
                 $this->calls[] = $payload;
-                $json = json_encode($payload, JSON_THROW_ON_ERROR);
+                $json = json_encode($payload, \JSON_THROW_ON_ERROR);
 
-                return json_decode(str_replace(['John Doe', 'john@example.com'], ['[PRIVATE_PERSON]', '[PRIVATE_EMAIL]'], $json), true, 512, JSON_THROW_ON_ERROR);
+                return json_decode(str_replace(['John Doe', 'john@example.com'], ['[PRIVATE_PERSON]', '[PRIVATE_EMAIL]'], $json), true, 512, \JSON_THROW_ON_ERROR);
             }
         };
 
@@ -114,7 +114,7 @@ final class PiiSanitizerProcessorTest extends TestCase
             self::assertSame(['pii_sanitizer' => 'unavailable'], $record->extra);
             self::assertSame(Level::Error, $record->level);
         }
-        $json = json_encode([$out->message, $out->context, $out->extra], JSON_THROW_ON_ERROR);
+        $json = json_encode([$out->message, $out->context, $out->extra], \JSON_THROW_ON_ERROR);
         self::assertStringNotContainsString('John Doe', $json);
         self::assertStringNotContainsString('john@example.com', $json);
         self::assertLessThan(0.5, microtime(true) - $start, 'logging must not stall while the engine is down');

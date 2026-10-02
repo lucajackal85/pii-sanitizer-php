@@ -12,8 +12,8 @@ interface PiiClientInterface
      * Returns the same type it was given (string in, string out; array in, array out).
      *
      * @param string|array<mixed> $payload
-     * @param MaskingStrategy $strategy how detected PII is replaced; always sent, so the engine's configured
-     *                                  masking_strategy does not apply to calls made through this client
+     * @param MaskingStrategy     $strategy how detected PII is replaced; always sent, so the engine's configured
+     *                                      masking_strategy does not apply to calls made through this client
      *
      * @return string|array<mixed>
      *

@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 final class PiiSocketClientTest extends TestCase
 {
     /** @var resource|null */
-    private $process = null;
+    private $process;
     private string $socket = '';
 
     protected function tearDown(): void
@@ -27,7 +27,7 @@ final class PiiSocketClientTest extends TestCase
     private function startServer(string $mode): void
     {
         $this->socket = sys_get_temp_dir() . '/pii-test-' . bin2hex(random_bytes(4)) . '.sock';
-        $cmd = [PHP_BINARY, __DIR__ . '/Fixtures/fake_server.php', $this->socket, $mode];
+        $cmd = [\PHP_BINARY, __DIR__ . '/Fixtures/fake_server.php', $this->socket, $mode];
         $process = proc_open($cmd, [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
         self::assertIsResource($process);
         $this->process = $process;

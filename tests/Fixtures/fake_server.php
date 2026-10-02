@@ -10,10 +10,10 @@ declare(strict_types=1);
 @unlink($path);
 $server = stream_socket_server('unix://' . $path, $errno, $errstr);
 if (false === $server) {
-    fwrite(STDERR, "listen failed: $errstr\n");
+    fwrite(\STDERR, "listen failed: $errstr\n");
     exit(1);
 }
-fwrite(STDOUT, "ready\n");
+fwrite(\STDOUT, "ready\n");
 
 $connections = 0;
 while ($conn = @stream_socket_accept($server, -1)) {
