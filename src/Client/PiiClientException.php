@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OpenPii\MonologSanitizer\Client;
+namespace Jackal\PiiSanitizer\Client;
 
 final class PiiClientException extends \RuntimeException
 {

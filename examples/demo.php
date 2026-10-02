@@ -7,10 +7,10 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use Jackal\PiiSanitizer\Client\PiiSocketClient;
+use Jackal\PiiSanitizer\Processor\PiiSanitizerProcessor;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
-use OpenPii\MonologSanitizer\Client\PiiSocketClient;
-use OpenPii\MonologSanitizer\Processor\PiiSanitizerProcessor;
 
 $socket = getenv('PII_SOCKET_PATH') ?: '/tmp/sockets/pii_sanitizer.sock';
 

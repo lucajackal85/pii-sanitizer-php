@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace OpenPii\MonologSanitizer\Processor;
+namespace Jackal\PiiSanitizer\Processor;
 
+use Jackal\PiiSanitizer\Client\PiiClientException;
+use Jackal\PiiSanitizer\Client\PiiClientInterface;
 use Monolog\Formatter\NormalizerFormatter;
 use Monolog\LogRecord;
 use Monolog\Processor\ProcessorInterface;
-use OpenPii\MonologSanitizer\Client\PiiClientException;
-use OpenPii\MonologSanitizer\Client\PiiClientInterface;
 
 /**
  * Sends message, context and extra to the PII engine in a single request and rebuilds the record

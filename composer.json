@@ -34,12 +34,12 @@
     },
     "autoload": {
         "psr-4": {
-            "OpenPii\\MonologSanitizer\\": "src/"
+            "Jackal\\PiiSanitizer\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "OpenPii\\MonologSanitizer\\Tests\\": "tests/"
+            "Jackal\\PiiSanitizer\\Tests\\": "tests/"
         }
     },
     "scripts": {

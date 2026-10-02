@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace OpenPii\MonologSanitizer\Tests;
+namespace Jackal\PiiSanitizer\Tests;
 
+use Jackal\PiiSanitizer\Client\MaskingStrategy;
+use Jackal\PiiSanitizer\Client\PiiClientException;
+use Jackal\PiiSanitizer\Client\PiiClientInterface;
+use Jackal\PiiSanitizer\Client\PiiSocketClient;
+use Jackal\PiiSanitizer\Processor\PiiSanitizerProcessor;
 use Monolog\Level;
 use Monolog\LogRecord;
-use OpenPii\MonologSanitizer\Client\MaskingStrategy;
-use OpenPii\MonologSanitizer\Client\PiiClientException;
-use OpenPii\MonologSanitizer\Client\PiiClientInterface;
-use OpenPii\MonologSanitizer\Client\PiiSocketClient;
-use OpenPii\MonologSanitizer\Processor\PiiSanitizerProcessor;
 use PHPUnit\Framework\TestCase;
 
 final class PiiSanitizerProcessorTest extends TestCase

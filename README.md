@@ -36,8 +36,8 @@ To run it next to your app, use [examples/docker-compose.yml](examples/docker-co
 ## Plain Monolog
 
 ```php
-use OpenPii\MonologSanitizer\Client\PiiSocketClient;
-use OpenPii\MonologSanitizer\Processor\PiiSanitizerProcessor;
+use Jackal\PiiSanitizer\Client\PiiSocketClient;
+use Jackal\PiiSanitizer\Processor\PiiSanitizerProcessor;
 
 $processor = new PiiSanitizerProcessor(
     new PiiSocketClient('/tmp/sockets/pii_sanitizer.sock', connectTimeout: 0.05, readTimeout: 1.0),
@@ -54,8 +54,8 @@ The record's message, context and extra are sent together in **one** request. Ob
 `PiiSocketClient` also works without Monolog, for any string or nested array:
 
 ```php
-use OpenPii\MonologSanitizer\Client\MaskingStrategy;
-use OpenPii\MonologSanitizer\Client\PiiSocketClient;
+use Jackal\PiiSanitizer\Client\MaskingStrategy;
+use Jackal\PiiSanitizer\Client\PiiSocketClient;
 
 $client = new PiiSocketClient('/tmp/sockets/pii_sanitizer.sock');
 
@@ -103,6 +103,20 @@ The version bump is set with a label on the PR:
 | `minor` | `v0.1.0` → `v0.2.0` |
 | `major` | `v0.1.0` → `v1.0.0` |
 | `skip-release` | no new version, e.g. for docs or CI changes |
+
+## Upgrading from 0.1
+
+In 0.2 the namespace changed from `OpenPii\MonologSanitizer\` to `Jackal\PiiSanitizer\`. The classes and their behaviour are the same, so only the `use` statements change:
+
+| 0.1 | 0.2 |
+|---|---|
+| `OpenPii\MonologSanitizer\Client\PiiSocketClient` | `Jackal\PiiSanitizer\Client\PiiSocketClient` |
+| `OpenPii\MonologSanitizer\Client\MaskingStrategy` | `Jackal\PiiSanitizer\Client\MaskingStrategy` |
+| `OpenPii\MonologSanitizer\Client\PiiClientInterface` | `Jackal\PiiSanitizer\Client\PiiClientInterface` |
+| `OpenPii\MonologSanitizer\Client\PiiClientException` | `Jackal\PiiSanitizer\Client\PiiClientException` |
+| `OpenPii\MonologSanitizer\Processor\PiiSanitizerProcessor` | `Jackal\PiiSanitizer\Processor\PiiSanitizerProcessor` |
+
+A search and replace of `OpenPii\MonologSanitizer\` with `Jackal\PiiSanitizer\` is enough.
 
 ## License
 

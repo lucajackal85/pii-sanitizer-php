@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OpenPii\MonologSanitizer\Client;
+namespace Jackal\PiiSanitizer\Client;
 
 /**
  * How the engine replaces detected PII. The values match the engine's "strategy" field.
