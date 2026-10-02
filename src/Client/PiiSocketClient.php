@@ -30,12 +30,10 @@ final class PiiSocketClient implements PiiClientInterface
         $this->close();
     }
 
-    public function sanitize(string|array $payload, ?MaskingStrategy $strategy = null): string|array
+    public function sanitize(string|array $payload, MaskingStrategy $strategy = MaskingStrategy::Tag): string|array
     {
-        $request = ['id' => (string) ++$this->seq, 'payload' => $payload];
-        if (null !== $strategy) {
-            $request['strategy'] = $strategy->value;
-        }
+        $request = ['id' => (string) ++$this->seq, 'payload' => $payload, 'strategy' => $strategy->value];
+
         try {
             $line = json_encode($request, \JSON_THROW_ON_ERROR | \JSON_UNESCAPED_UNICODE | \JSON_INVALID_UTF8_SUBSTITUTE) . "\n";
         } catch (\JsonException $e) {

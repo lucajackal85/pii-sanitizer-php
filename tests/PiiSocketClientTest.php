@@ -53,7 +53,7 @@ final class PiiSocketClientTest extends TestCase
         self::assertSame('Hi ********', $client->sanitize('Hi John Doe', MaskingStrategy::Asterisk));
         self::assertSame('Hi [PRIVATE_PERSON_4c2a]', $client->sanitize('Hi John Doe', MaskingStrategy::Hash));
         self::assertSame('Hi [PRIVATE_PERSON]', $client->sanitize('Hi John Doe', MaskingStrategy::Tag));
-        self::assertSame('Hi [PRIVATE_PERSON]', $client->sanitize('Hi John Doe'), 'no strategy = engine default');
+        self::assertSame('Hi [PRIVATE_PERSON]', $client->sanitize('Hi John Doe'), 'the default Tag is sent explicitly');
     }
 
     public function testReusesPersistentConnection(): void

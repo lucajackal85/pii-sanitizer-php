@@ -24,10 +24,11 @@ while ($conn = @stream_socket_accept($server, -1)) {
             sleep(5);
             continue;
         }
-        $mask = match ($req['strategy'] ?? 'tag') {
+        $mask = match ($req['strategy'] ?? null) {
+            'tag' => '[PRIVATE_PERSON]',
             'asterisk' => '********',
             'hash' => '[PRIVATE_PERSON_4c2a]',
-            default => '[PRIVATE_PERSON]',
+            default => '[NO_STRATEGY_SENT]',
         };
         $walk = static function ($v) use (&$walk, $mask) {
             if (is_string($v)) {

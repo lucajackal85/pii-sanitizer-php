@@ -74,7 +74,7 @@ $client->sanitize('John Doe called support', MaskingStrategy::Hash);     // "[PR
 $client->sanitize('John Doe called support', MaskingStrategy::Asterisk); // "******** called support"
 ```
 
-Without a strategy, the engine uses its configured `masking_strategy`. The `MaskingStrategy` enum lists the strategies it accepts: `Tag`, `Hash` and `Asterisk`.
+The strategy defaults to `MaskingStrategy::Tag`. The client always sends it, so the engine's own `masking_strategy` setting doesn't apply to calls made through this package. The enum lists the strategies the engine accepts: `Tag`, `Hash` and `Asterisk`.
 
 ## When the sidecar is unavailable
 
