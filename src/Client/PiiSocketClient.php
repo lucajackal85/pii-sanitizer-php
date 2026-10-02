@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace OpenPii\MonologSanitizer\Client;
+namespace Jackal\PiiSanitizer\Client;
 
 /**
  * Unix-socket client for the PII Sanitizer Engine (newline-delimited JSON, see PROTOCOL.md).

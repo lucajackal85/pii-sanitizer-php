@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace OpenPii\MonologSanitizer\Tests;
+namespace Jackal\PiiSanitizer\Tests;
 
-use OpenPii\MonologSanitizer\Client\MaskingStrategy;
-use OpenPii\MonologSanitizer\Client\PiiClientException;
-use OpenPii\MonologSanitizer\Client\PiiSocketClient;
+use Jackal\PiiSanitizer\Client\MaskingStrategy;
+use Jackal\PiiSanitizer\Client\PiiClientException;
+use Jackal\PiiSanitizer\Client\PiiSocketClient;
 use PHPUnit\Framework\TestCase;
 
 final class PiiSocketClientTest extends TestCase
