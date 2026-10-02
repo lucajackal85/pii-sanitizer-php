@@ -25,7 +25,23 @@ composer require lucajackal85/pii-sanitizer-php:dev-main
 
 While the repository is private, Composer needs a GitHub token that can read it (`composer config --global github-oauth.github.com <token>`).
 
-Requirements: PHP ≥ 8.1 and Monolog ^3. You also need a running `pii-sanitizer-engine` container whose socket your PHP process can read and write (see [examples/docker-compose.yml](examples/docker-compose.yml)).
+Requirements: PHP ≥ 8.1 and Monolog ^3. You also need a running PII Sanitizer Engine container whose socket your PHP process can read and write. See [Running the engine](#running-the-engine).
+
+## Running the engine
+
+The engine is published as a public Docker image on GitHub's container registry, `ghcr.io/lucajackal85/pii-sanitizer-engine`, so no login is needed. Its source and full documentation are in [pii-sanitizer-engine](https://github.com/lucajackal85/pii-sanitizer-engine).
+
+```bash
+docker pull ghcr.io/lucajackal85/pii-sanitizer-engine:latest
+```
+
+```bash
+docker run -d --name pii-sanitizer-engine --user "$(id -u):$(id -g)" -v /tmp/pii-sockets:/tmp/sockets ghcr.io/lucajackal85/pii-sanitizer-engine:latest
+```
+
+The socket is then at `/tmp/pii-sockets/pii_sanitizer.sock`. Pass that path to `PiiSocketClient`, or set it as `PII_SOCKET_PATH`. The model takes about 10 seconds to load; `docker logs pii-sanitizer-engine` shows `listening on …` when it's ready.
+
+To run it next to your app, use [examples/docker-compose.yml](examples/docker-compose.yml), which already uses this image. To change the engine's settings, see its [configuration guide](https://github.com/lucajackal85/pii-sanitizer-engine#configuration).
 
 ## Plain Monolog
 
