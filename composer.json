@@ -3,6 +3,17 @@
     "description": "Monolog processor and Unix-socket client that scrub PII and secrets via the local PII Sanitizer Engine.",
     "homepage": "https://github.com/lucajackal85/pii-sanitizer-php",
     "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Luca Giacalone",
+            "homepage": "https://github.com/lucajackal85"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/lucajackal85/pii-sanitizer-php/issues",
+        "source": "https://github.com/lucajackal85/pii-sanitizer-php"
+    },
     "keywords": [
         "monolog",
         "pii",
