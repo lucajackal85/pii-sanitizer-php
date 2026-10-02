@@ -1,6 +1,6 @@
 <?php
 
-// Minimal NDJSON engine stand-in: replaces "John Doe" with [PRIVATE_PERSON] in every string value.
+// Minimal NDJSON engine stand-in: replaces "John Doe" in every string value, honouring the request's strategy.
 // Usage: php fake_server.php <socket-path> <mode>
 //   mode = normal | close   (close the connection after every response) | slow (never answer) | error
 
@@ -24,9 +24,15 @@ while ($conn = @stream_socket_accept($server, -1)) {
             sleep(5);
             continue;
         }
-        $walk = static function ($v) use (&$walk) {
+        $mask = match ($req['strategy'] ?? null) {
+            'tag' => '[PRIVATE_PERSON]',
+            'asterisk' => '********',
+            'hash' => '[PRIVATE_PERSON_4c2a]',
+            default => '[NO_STRATEGY_SENT]',
+        };
+        $walk = static function ($v) use (&$walk, $mask) {
             if (is_string($v)) {
-                return str_replace('John Doe', '[PRIVATE_PERSON]', $v);
+                return str_replace('John Doe', $mask, $v);
             }
 
             return is_array($v) ? array_map($walk, $v) : $v;

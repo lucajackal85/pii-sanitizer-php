@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace OpenPii\MonologSanitizer\Tests;
 
+use OpenPii\MonologSanitizer\Client\MaskingStrategy;
 use OpenPii\MonologSanitizer\Client\PiiClientException;
 use OpenPii\MonologSanitizer\Client\PiiSocketClient;
 use PHPUnit\Framework\TestCase;
@@ -42,6 +43,17 @@ final class PiiSocketClientTest extends TestCase
 
         self::assertSame(['message' => 'Hi [PRIVATE_PERSON]', 'context' => ['n' => 3, 'who' => ['[PRIVATE_PERSON]']]], $result);
         self::assertSame('[PRIVATE_PERSON]', $client->sanitize('John Doe'));
+    }
+
+    public function testStrategyIsSentAsItsProtocolValue(): void
+    {
+        $this->startServer('normal');
+        $client = new PiiSocketClient($this->socket);
+
+        self::assertSame('Hi ********', $client->sanitize('Hi John Doe', MaskingStrategy::Asterisk));
+        self::assertSame('Hi [PRIVATE_PERSON_4c2a]', $client->sanitize('Hi John Doe', MaskingStrategy::Hash));
+        self::assertSame('Hi [PRIVATE_PERSON]', $client->sanitize('Hi John Doe', MaskingStrategy::Tag));
+        self::assertSame('Hi [PRIVATE_PERSON]', $client->sanitize('Hi John Doe'), 'the default Tag is sent explicitly');
     }
 
     public function testReusesPersistentConnection(): void
