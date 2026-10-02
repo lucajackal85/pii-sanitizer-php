@@ -27,8 +27,10 @@
         "monolog/monolog": "^3.0"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.95",
+        "phpstan/phpstan": "^2.0",
         "phpunit/phpunit": "^10.5 || ^11.0",
-        "phpstan/phpstan": "^2.0"
+        "rector/rector": "^2.6"
     },
     "autoload": {
         "psr-4": {
@@ -42,7 +44,17 @@
     },
     "scripts": {
         "test": "phpunit",
-        "stan": "phpstan analyse"
+        "stan": "phpstan analyse",
+        "cs": "php-cs-fixer fix --dry-run --diff",
+        "cs-fix": "php-cs-fixer fix",
+        "rector": "rector process --dry-run",
+        "rector-fix": "rector process",
+        "check": [
+            "@cs",
+            "@rector",
+            "@stan",
+            "@test"
+        ]
     },
     "config": {
         "sort-packages": true
