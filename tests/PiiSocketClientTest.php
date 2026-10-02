@@ -34,6 +34,17 @@ final class PiiSocketClientTest extends TestCase
         self::assertSame("ready\n", fgets($pipes[1]));
     }
 
+    /**
+     * Kills the fake engine, like a crashed or stopped container. The socket file stays behind.
+     */
+    private function stopServer(): void
+    {
+        self::assertIsResource($this->process);
+        proc_terminate($this->process);
+        proc_close($this->process);
+        $this->process = null;
+    }
+
     public function testRoundTripNestedPayload(): void
     {
         $this->startServer('normal');
@@ -100,6 +111,26 @@ final class PiiSocketClientTest extends TestCase
         $this->expectException(PiiClientException::class);
         $this->expectExceptionMessage('boom');
         (new PiiSocketClient($this->socket))->sanitize('x');
+    }
+
+    public function testThrowsWhenEngineDiesAfterAWorkingConnection(): void
+    {
+        $this->startServer('normal');
+        $client = new PiiSocketClient($this->socket);
+        self::assertSame('[PRIVATE_PERSON]', $client->sanitize('John Doe'));
+
+        $this->stopServer();
+        self::assertFileExists($this->socket, 'a dead engine can leave its socket file behind');
+
+        // The kept-open connection is dead, so the client opens a fresh one, and nothing is listening anymore.
+        $start = microtime(true);
+        try {
+            $client->sanitize('John Doe');
+            self::fail('expected a PiiClientException');
+        } catch (PiiClientException $e) {
+            self::assertStringContainsString('Cannot connect', $e->getMessage());
+        }
+        self::assertLessThan(0.5, microtime(true) - $start, 'a dead engine must fail fast, not wait for the read timeout');
     }
 
     public function testMissingSocketThrows(): void
