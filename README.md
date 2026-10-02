@@ -2,7 +2,7 @@
 
 A Monolog 3 processor that removes PII and secrets from log records. It sends each record to the local [PII Sanitizer Engine](https://github.com/lucajackal85/pii-sanitizer-engine) sidecar over a Unix socket and writes back the sanitized result. It works with any PHP application that uses Monolog.
 
-This package is framework-agnostic. Symfony and Laravel integrations will live in separate packages built on top of it.
+This package is framework-agnostic. For Symfony, use the [pii-sanitizer-symfony](https://github.com/lucajackal85/pii-sanitizer-symfony) bundle, which sets it up automatically. A Laravel integration is planned as a separate package.
 
 ```text
 Before:  Payment failed for John Doe  {"email":"john@example.com"}
