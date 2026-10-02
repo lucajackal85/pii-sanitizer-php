@@ -11,7 +11,7 @@ services:
         condition: service_healthy
 
   pii-sanitizer-engine:
-    # Build it from https://github.com/lucajackal85/pii-sanitizer-engine (`make build`) until the image is published.
+    # See "Running the engine" in the README for publishing the image and logging in to ghcr.io.
     image: ghcr.io/lucajackal85/pii-sanitizer-engine:latest
     # The socket is created with mode 0660. Use the gid of the app's PHP-FPM user
     # (www-data is 33 on Debian images, 82 on Alpine images) so the app can connect.

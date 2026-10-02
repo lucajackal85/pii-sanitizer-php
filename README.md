@@ -25,7 +25,50 @@ composer require lucajackal85/pii-sanitizer-php:dev-main
 
 While the repository is private, Composer needs a GitHub token that can read it (`composer config --global github-oauth.github.com <token>`).
 
-Requirements: PHP ≥ 8.1 and Monolog ^3. You also need a running `pii-sanitizer-engine` container whose socket your PHP process can read and write (see [examples/docker-compose.yml](examples/docker-compose.yml)).
+Requirements: PHP ≥ 8.1 and Monolog ^3. You also need a running PII Sanitizer Engine container whose socket your PHP process can read and write. See [Running the engine](#running-the-engine).
+
+## Running the engine
+
+The engine is published as a Docker image on GitHub's container registry: `ghcr.io/lucajackal85/pii-sanitizer-engine`. Its source and full documentation are in [pii-sanitizer-engine](https://github.com/lucajackal85/pii-sanitizer-engine).
+
+### 1. Publish the image (maintainers)
+
+Image builds don't run automatically. To publish the current `main`, start the `docker-publish` workflow by hand, either from **Actions → docker-publish → Run workflow** on the `main` branch, or from the terminal:
+
+```bash
+gh workflow run docker-publish --repo lucajackal85/pii-sanitizer-engine --ref main
+```
+
+It runs the tests, builds the image and pushes it with two tags:
+
+- `ghcr.io/lucajackal85/pii-sanitizer-engine:latest`
+- `ghcr.io/lucajackal85/pii-sanitizer-engine:sha-<commit>`, which pins an exact version
+
+A run takes about 15 minutes of GitHub Actions time, mostly downloading the ~2.8 GB of model weights into the image.
+
+### 2. Log in to the registry
+
+While the image is private, you need a GitHub token with the `read:packages` scope. A classic personal access token works, or add the scope to the GitHub CLI with `gh auth refresh -s read:packages` and use `gh auth token`:
+
+```bash
+echo <TOKEN> | docker login ghcr.io -u <github-username> --password-stdin
+```
+
+If the image's visibility is set to public (on GitHub: Packages → `pii-sanitizer-engine` → Package settings), anyone can pull it without logging in, and this step isn't needed.
+
+### 3. Pull and run it
+
+```bash
+docker pull ghcr.io/lucajackal85/pii-sanitizer-engine:latest
+```
+
+```bash
+docker run -d --name pii-sanitizer-engine --user "$(id -u):$(id -g)" -v /tmp/pii-sockets:/tmp/sockets ghcr.io/lucajackal85/pii-sanitizer-engine:latest
+```
+
+The socket is then at `/tmp/pii-sockets/pii_sanitizer.sock`. Pass that path to `PiiSocketClient`, or set it as `PII_SOCKET_PATH`. The model takes about 10 seconds to load; `docker logs pii-sanitizer-engine` shows `listening on …` when it's ready.
+
+To run it next to your app, use [examples/docker-compose.yml](examples/docker-compose.yml), which already uses this image. To change the engine's settings, see its [configuration guide](https://github.com/lucajackal85/pii-sanitizer-engine#configuration).
 
 ## Plain Monolog
 
