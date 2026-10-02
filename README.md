@@ -29,19 +29,7 @@ Requirements: PHP ≥ 8.1 and Monolog ^3. You also need a running PII Sanitizer 
 
 ## Running the engine
 
-The engine is published as a Docker image on GitHub's container registry: `ghcr.io/lucajackal85/pii-sanitizer-engine`. Its source and full documentation are in [pii-sanitizer-engine](https://github.com/lucajackal85/pii-sanitizer-engine).
-
-### 1. Log in to the registry
-
-While the image is private, you need a GitHub token with the `read:packages` scope. A classic personal access token works, or add the scope to the GitHub CLI with `gh auth refresh -s read:packages` and use `gh auth token`:
-
-```bash
-echo <TOKEN> | docker login ghcr.io -u <github-username> --password-stdin
-```
-
-If the image's visibility is set to public (on GitHub: Packages → `pii-sanitizer-engine` → Package settings), anyone can pull it without logging in, and this step isn't needed.
-
-### 2. Pull and run it
+The engine is published as a public Docker image on GitHub's container registry, `ghcr.io/lucajackal85/pii-sanitizer-engine`, so no login is needed. Its source and full documentation are in [pii-sanitizer-engine](https://github.com/lucajackal85/pii-sanitizer-engine).
 
 ```bash
 docker pull ghcr.io/lucajackal85/pii-sanitizer-engine:latest
