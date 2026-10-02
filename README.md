@@ -1,6 +1,8 @@
 # pii-sanitizer-php
 
-A Monolog 3 processor that removes PII and secrets from log records. It sends each record to the local [PII Sanitizer Engine](https://github.com/lucajackal85/pii-sanitizer-engine) sidecar over a Unix socket and writes back the sanitized result. It also includes a **Laravel tap** and a **Symfony bundle**.
+A Monolog 3 processor that removes PII and secrets from log records. It sends each record to the local [PII Sanitizer Engine](https://github.com/lucajackal85/pii-sanitizer-engine) sidecar over a Unix socket and writes back the sanitized result. It works with any PHP application that uses Monolog.
+
+This package is framework-agnostic. Symfony and Laravel integrations will live in separate packages built on top of it.
 
 ```text
 Before:  Payment failed for John Doe  {"email":"john@example.com"}
@@ -40,52 +42,6 @@ $handler->pushProcessor($processor);   // per handler, or $logger->pushProcessor
 ```
 
 The record's message, context and extra are sent together in **one** request. Objects and exceptions in the context are first normalized with Monolog's `NormalizerFormatter`, so the engine sees the same data your formatter would.
-
-## Laravel
-
-In `config/logging.php`, add the tap to every channel that sends data off the box:
-
-```php
-'daily' => [
-    'driver' => 'daily',
-    'path' => storage_path('logs/laravel.log'),
-    'tap' => [OpenPii\MonologSanitizer\Laravel\PiiSanitizerTap::class],
-],
-```
-
-Configure it with environment variables:
-
-| env | default |
-|---|---|
-| `PII_SOCKET_PATH` | `/tmp/sockets/pii_sanitizer.sock` |
-| `PII_ON_FAILURE` | `redact` |
-| `PII_CONNECT_TIMEOUT` | `0.05` (seconds) |
-| `PII_READ_TIMEOUT` | `1.0` (seconds) |
-
-The tap attaches the processor to each handler of the channel. One processor and one persistent socket connection are shared by every channel in a worker.
-
-## Symfony
-
-```php
-// config/bundles.php
-return [
-    // ...
-    OpenPii\MonologSanitizer\Bridge\Symfony\PiiSanitizerBundle::class => ['all' => true],
-];
-```
-
-```yaml
-# config/packages/pii_sanitizer.yaml
-pii_sanitizer:
-  socket_path: '%env(PII_SOCKET_PATH)%'
-  connect_timeout: 0.05
-  read_timeout: 1.0
-  on_failure: redact          # redact | passthrough
-  circuit_breaker_seconds: 5
-  channels: []                # empty = all channels; e.g. [app, security]
-```
-
-The processor is registered with the `monolog.processor` tag, so MonologBundle runs it before the Sentry, DataDog and file handlers.
 
 ## When the sidecar is unavailable
 

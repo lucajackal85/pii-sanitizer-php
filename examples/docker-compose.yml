@@ -1,7 +1,7 @@
 # Example stack: a PHP app and the PII sidecar sharing a Unix socket through a named volume.
 services:
   app:
-    image: your-org/symfony-app:latest
+    image: your-org/php-app:latest
     volumes:
       - shared-sockets:/tmp/sockets
     environment:
