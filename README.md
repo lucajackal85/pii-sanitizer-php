@@ -11,19 +11,9 @@ After:   Payment failed for [PRIVATE_PERSON]  {"email":"[PRIVATE_EMAIL]"}
 
 ## Install
 
-The package is not on Packagist yet, so first add this repository to your app's `composer.json`:
-
-```json
-"repositories": [
-    { "type": "vcs", "url": "https://github.com/lucajackal85/pii-sanitizer-php" }
-]
-```
-
 ```bash
-composer require lucajackal85/pii-sanitizer-php:dev-main
+composer require lucajackal85/pii-sanitizer-php
 ```
-
-While the repository is private, Composer needs a GitHub token that can read it (`composer config --global github-oauth.github.com <token>`).
 
 Requirements: PHP ≥ 8.1 and Monolog ^3. You also need a running PII Sanitizer Engine container whose socket your PHP process can read and write. See [Running the engine](#running-the-engine).
 
@@ -82,3 +72,7 @@ vendor/bin/phpunit
 vendor/bin/phpstan analyse
 PII_SOCKET_PATH=/tmp/sockets/pii_sanitizer.sock php examples/demo.php   # against a running engine
 ```
+
+## License
+
+MIT. See [LICENSE](LICENSE).
